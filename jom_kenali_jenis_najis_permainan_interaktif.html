@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jom Kenali Jenis Najis - Permainan Interaktif</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css for smooth transitions -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Fredoka', cursive, sans-serif;
+            background-color: #f0fdf4;
+            user-select: none;
+        }
+
+        .btn-bounce:active {
+            transform: scale(0.95);
+        }
+
+        .category-card {
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
+
+    <header class="bg-emerald-600 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-2 rounded-full text-emerald-600 shadow">
+                    <i class="fa-solid fa-soap text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold">Jom Kenali Jenis Najis</h1>
+                    <p class="text-xs text-emerald-100">Kuiz & Permainan Pendidikan Islam MBPK</p>
+                </div>
+            </div>
+            
+            <!-- Global Score Display -->
+            <div class="flex items-center gap-4">
+                <div class="bg-emerald-700 px-4 py-1.5 rounded-full flex items-center gap-2 border border-emerald-400">
+                    <i class="fa-solid fa-star text-yellow-300 text-xl animate-pulse"></i>
+                    <span id="global-score" class="font-bold text-xl">0</span>
+                </div>
+                <button onclick="toggleAudioHelp()" id="audio-toggle" class="bg-emerald-500 hover:bg-emerald-400 p-2.5 rounded-full transition" title="Mute/Unmute">
+                    <i class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto w-full p-4 flex-grow flex flex-col justify-center">
+
+        <!-- SCREEN 1: MENU UTAMA -->
+        <div id="screen-menu" class="space-y-6 text-center animate__animated animate__fadeIn">
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-emerald-200">
+                <div class="inline-block p-4 bg-emerald-100 rounded-full mb-4">
+                    <span class="text-6xl">🧼</span>
+                </div>
+                <h2 class="text-3xl font-extrabold text-emerald-700 mb-2">Selamat Datang!</h2>
+                <p class="text-gray-600 text-lg mb-6">Mari belajar dan menguji kefahaman tentang 3 jenis najis dengan cara yang menyeronokkan!</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <!-- Najis Ringan Kad dengan Gambar -->
+                    <div class="bg-sky-50 border-2 border-sky-300 rounded-2xl p-4 text-center flex flex-col items-center justify-between shadow-sm hover:shadow-md transition">
+                        <div class="relative mb-2">
+                            <img src="https://images.unsplash.com/photo-1544126592-807ade215a0b?w=300&auto=format&fit=crop&q=80" 
+                                 alt="Najis Ringan - Bayi Lelaki" 
+                                 class="w-24 h-24 object-cover rounded-2xl border-2 border-sky-300 shadow-sm" 
+                                 onerror="this.onerror=null; this.src='https://placehold.co/200x200/e0f2fe/0369a1?text=Bayi+Lelaki+🍼';">
+                            <span class="absolute -bottom-2 -right-2 bg-sky-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">Mukhaffafah</span>
+                        </div>
+                        <h3 class="font-bold text-sky-800 text-lg mt-1">Najis Ringan</h3>
+                        <p class="text-xs text-sky-600 font-semibold">(Mukhaffafah)</p>
+                        <p class="text-xs text-gray-600 mt-2 font-medium">Air kencing bayi lelaki &lt; 2 tahun (hanya minum susu ibu)</p>
+                    </div>
+
+                    <!-- Najis Sederhana Kad -->
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 text-center flex flex-col items-center justify-between shadow-sm hover:shadow-md transition">
+                        <div class="text-5xl my-2">🐔</div>
+                        <div>
+                            <h3 class="font-bold text-amber-800 text-lg">Najis Sederhana</h3>
+                            <p class="text-xs text-amber-600 font-semibold">(Mutawassitah)</p>
+                            <p class="text-xs text-gray-600 mt-2 font-medium">Darah, muntah, tahi haiwan & manusia</p>
+                        </div>
+                    </div>
+
+                    <!-- Najis Berat Kad -->
+                    <div class="bg-rose-50 border-2 border-rose-300 rounded-2xl p-4 text-center flex flex-col items-center justify-between shadow-sm hover:shadow-md transition">
+                        <div class="text-5xl my-2">🐕</div>
+                        <div>
+                            <h3 class="font-bold text-rose-800 text-lg">Najis Berat</h3>
+                            <p class="text-xs text-rose-600 font-semibold">(Mughallazah)</p>
+                            <p class="text-xs text-gray-600 mt-2 font-medium">Anjing, babi & keturunannya</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Mode Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="startQuizMode()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-8 rounded-2xl text-xl shadow-lg border-b-4 border-emerald-700 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-gamepad text-2xl"></i>
+                        <span>Mod Kuiz Soalan</span>
+                    </button>
+                    <button onclick="startSortingGame()" class="btn-bounce bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-8 rounded-2xl text-xl shadow-lg border-b-4 border-teal-700 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-boxes-packing text-2xl"></i>
+                        <span>Mod Pengasingan</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: MOD KUIZ -->
+        <div id="screen-quiz" class="hidden space-y-6 animate__animated animate__fadeIn">
+            <!-- Progress Bar -->
+            <div class="bg-white p-4 rounded-2xl shadow border border-emerald-100 flex items-center gap-4">
+                <span id="quiz-progress-text" class="font-bold text-emerald-700 min-w-[80px]">Soalan 1/5</span>
+                <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div id="quiz-progress-bar" class="bg-emerald-500 h-4 rounded-full transition-all duration-300" style="width: 20%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-emerald-200 text-center relative">
+                <!-- TTS Button -->
+                <button onclick="speakCurrentQuestion()" class="absolute top-4 right-4 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 p-3 rounded-full transition" title="Baca Soalan">
+                    <i class="fa-solid fa-volume-high text-xl"></i>
+                </button>
+
+                <!-- Image container for question (if available) -->
+                <div id="question-image-container" class="flex justify-center mb-3">
+                    <img id="question-img" src="" alt="Gambar Soalan" class="w-28 h-28 object-cover rounded-2xl border-4 border-emerald-100 shadow hidden">
+                </div>
+                <div id="question-icon" class="text-6xl mb-4 animate__animated animate__bounceIn">🍼</div>
+                <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Sila tunggu...</h2>
+
+                <!-- Options -->
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Dynamic Options Inserted Here -->
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button onclick="showMenu()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Menu Utama</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: MOD PENGASINGAN (SORTING GAME) -->
+        <div id="screen-sorting" class="hidden space-y-6 animate__animated animate__fadeIn">
+            <div class="bg-white p-4 rounded-2xl shadow border border-emerald-100 text-center">
+                <h2 class="text-2xl font-bold text-emerald-800">Ketuk Kad & Pilih Kotak yang Betul!</h2>
+                <p class="text-sm text-gray-600">Bantu asingkan item najis di bawah ke dalam kotaknya.</p>
+            </div>
+
+            <!-- Current Item to Sort -->
+            <div id="sorting-card-container" class="bg-white p-6 rounded-3xl shadow-xl border-4 border-dashed border-teal-300 text-center flex flex-col items-center justify-center min-h-[220px]">
+                <img id="sort-item-img" src="" alt="Item Najis" class="w-24 h-24 object-cover rounded-2xl border-2 border-teal-200 shadow-sm mb-2 hidden" onerror="this.classList.add('hidden')">
+                <div id="sort-item-icon" class="text-7xl mb-2 animate__animated animate__pulse animate__infinite">🐕</div>
+                <div id="sort-item-name" class="text-2xl font-bold text-slate-800">Anjing & Air Liurnya</div>
+                <p class="text-xs text-gray-400 mt-1">Sila ketuk salah satu kotak kategori di bawah 👇</p>
+            </div>
+
+            <!-- Category Buckets -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Ringan -->
+                <button onclick="submitSort('Mukhaffafah')" class="category-card bg-sky-100 hover:bg-sky-200 border-4 border-sky-400 p-5 rounded-3xl text-center shadow-lg active:scale-95 transition flex flex-col items-center">
+                    <div class="text-3xl mb-1">🪶</div>
+                    <div class="font-bold text-sky-900 text-xl">Najis Ringan</div>
+                    <div class="text-xs text-sky-700 font-semibold">(Mukhaffafah)</div>
+                </button>
+
+                <!-- Sederhana -->
+                <button onclick="submitSort('Mutawassitah')" class="category-card bg-amber-100 hover:bg-amber-200 border-4 border-amber-400 p-5 rounded-3xl text-center shadow-lg active:scale-95 transition flex flex-col items-center">
+                    <div class="text-3xl mb-1">🐔</div>
+                    <div class="font-bold text-amber-900 text-xl">Najis Sederhana</div>
+                    <div class="text-xs text-amber-700 font-semibold">(Mutawassitah)</div>
+                </button>
+
+                <!-- Berat -->
+                <button onclick="submitSort('Mughallazah')" class="category-card bg-rose-100 hover:bg-rose-200 border-4 border-rose-400 p-5 rounded-3xl text-center shadow-lg active:scale-95 transition flex flex-col items-center">
+                    <div class="text-3xl mb-1">🐘</div>
+                    <div class="font-bold text-rose-900 text-xl">Najis Berat</div>
+                    <div class="text-xs text-rose-700 font-semibold">(Mughallazah)</div>
+                </button>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button onclick="showMenu()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Menu Utama</span>
+                </button>
+                <span id="sort-progress" class="font-bold text-teal-700">Item 1/6</span>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: KEPUTUSAN / TAHNIAH -->
+        <div id="screen-results" class="hidden space-y-6 text-center animate__animated animate__zoomIn">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-yellow-300">
+                <div class="inline-block p-4 bg-yellow-100 rounded-full mb-3 text-yellow-600">
+                    <i class="fa-solid fa-trophy text-6xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-1">Syabas & Tahniah!</h2>
+                <p class="text-gray-600 text-lg mb-6">Kamu telah menamatkan permainan ini dengan cemerlang!</p>
+
+                <!-- Score Board Card -->
+                <div class="bg-emerald-50 rounded-2xl p-6 mb-6 border border-emerald-200 max-w-sm mx-auto">
+                    <p class="text-sm font-semibold text-emerald-700 uppercase">Jumlah Bintang Dikumpul</p>
+                    <div class="text-5xl font-black text-amber-500 my-2 flex items-center justify-center gap-2">
+                        <span>⭐</span>
+                        <span id="final-score">0</span>
+                    </div>
+                    <p id="badge-text" class="text-md font-bold text-emerald-800 mt-2">👑 Juara Detektif Suci</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showMenu()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl text-lg shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Main Lagi</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-600 font-medium">
+        <p>Hak Cipta Terpelihara . Cikgu Nur Fatin Nabilah binti Zolkefle</p>
+        <p class="text-emerald-700 font-semibold mt-1">Sekolah Agama Pendidikan Khas Johor Bahru</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Variables
+        let globalScore = 0;
+        let audioEnabled = true;
+
+        // Quiz Data (Dengan Gambar Najis Ringan)
+        let currentQuizIndex = 0;
+        const quizData = [
+            {
+                icon: "🍼",
+                img: "https://images.unsplash.com/photo-1544126592-807ade215a0b?w=300&auto=format&fit=crop&q=80",
+                question: "Air kencing bayi lelaki bawah 2 tahun (hanya minum susu ibu) ialah najis...",
+                options: [
+                    { text: "Ringan (Mukhaffafah)", correct: true, color: "sky" },
+                    { text: "Sederhana (Mutawassitah)", correct: false, color: "amber" },
+                    { text: "Berat (Mughallazah)", correct: false, color: "rose" }
+                ]
+            },
+            {
+                icon: "🐕",
+                img: "",
+                question: "Anjing, babi dan air liurnya tergolong dalam najis...",
+                options: [
+                    { text: "Ringan (Mukhaffafah)", correct: false, color: "sky" },
+                    { text: "Sederhana (Mutawassitah)", correct: false, color: "amber" },
+                    { text: "Berat (Mughallazah)", correct: true, color: "rose" }
+                ]
+            },
+            {
+                icon: "🐔",
+                img: "",
+                question: "Tahi ayam dan tahi kucing adalah contoh bagi najis...",
+                options: [
+                    { text: "Ringan (Mukhaffafah)", correct: false, color: "sky" },
+                    { text: "Sederhana (Mutawassitah)", correct: true, color: "amber" },
+                    { text: "Berat (Mughallazah)", correct: false, color: "rose" }
+                ]
+            },
+            {
+                icon: "🩸",
+                img: "",
+                question: "Darah dan muntah termasuk dalam kategori najis...",
+                options: [
+                    { text: "Sederhana (Mutawassitah)", correct: true, color: "amber" },
+                    { text: "Ringan (Mukhaffafah)", correct: false, color: "sky" },
+                    { text: "Berat (Mughallazah)", correct: false, color: "rose" }
+                ]
+            },
+            {
+                icon: "🐖",
+                img: "",
+                question: "Kotoran daripada babi tergolong dalam jenis najis...",
+                options: [
+                    { text: "Ringan (Mukhaffafah)", correct: false, color: "sky" },
+                    { text: "Berat (Mughallazah)", correct: true, color: "rose" },
+                    { text: "Sederhana (Mutawassitah)", correct: false, color: "amber" }
+                ]
+            }
+        ];
+
+        // Sorting Game Data (Dengan Gambar Najis Ringan)
+        let currentSortIndex = 0;
+        const sortingData = [
+            { icon: "🍼", img: "https://images.unsplash.com/photo-1544126592-807ade215a0b?w=300&auto=format&fit=crop&q=80", name: "Air Kencing Bayi Lelaki (<2 tahun)", category: "Mukhaffafah" },
+            { icon: "🐔", img: "", name: "Tahi Ayam & Burung", category: "Mutawassitah" },
+            { icon: "🐕", img: "", name: "Anjing & Air Liurnya", category: "Mughallazah" },
+            { icon: "🩸", img: "", name: "Darah yang Mengalir", category: "Mutawassitah" },
+            { icon: "🐖", img: "", name: "Babi & Kulitnya", category: "Mughallazah" },
+            { icon: "🤮", img: "", name: "Muntah Manusia", category: "Mutawassitah" }
+        ];
+
+        // Sound Effects generator using Web Audio API
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.setValueAtTime(180, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.05);
+                }
+            } catch (e) {
+                console.log("Audio API issue.");
+            }
+        }
+
+        // Text To Speech (Malay)
+        function speakText(text) {
+            if (!audioEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ms-MY';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleAudioHelp() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('audio-toggle');
+            if (audioEnabled) {
+                btn.innerHTML = '<i class="fa-solid fa-volume-high text-lg"></i>';
+                btn.classList.replace('bg-gray-400', 'bg-emerald-500');
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-volume-xmark text-lg"></i>';
+                btn.classList.replace('bg-emerald-500', 'bg-gray-400');
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        function hideAllScreens() {
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-sorting').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+        }
+
+        function showMenu() {
+            playSound('click');
+            hideAllScreens();
+            document.getElementById('screen-menu').classList.remove('hidden');
+        }
+
+        function updateGlobalScore(points) {
+            globalScore += points;
+            document.getElementById('global-score').innerText = globalScore;
+        }
+
+        function startQuizMode() {
+            playSound('click');
+            currentQuizIndex = 0;
+            hideAllScreens();
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const current = quizData[currentQuizIndex];
+            
+            document.getElementById('quiz-progress-text').innerText = `Soalan ${currentQuizIndex + 1}/${quizData.length}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQuizIndex + 1) / quizData.length) * 100}%`;
+
+            const imgEl = document.getElementById('question-img');
+            if (current.img) {
+                imgEl.src = current.img;
+                imgEl.classList.remove('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+            }
+
+            document.getElementById('question-icon').innerText = current.icon;
+            document.getElementById('question-text').innerText = current.question;
+
+            speakText(current.question);
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            current.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-bounce bg-white border-4 border-${opt.color}-400 hover:bg-${opt.color}-50 text-slate-800 font-bold p-5 rounded-2xl text-lg shadow-md transition flex flex-col items-center justify-center gap-2`;
+                btn.onclick = () => handleQuizAnswer(opt.correct, btn);
+                btn.innerHTML = `
+                    <span class="text-sm font-semibold text-${opt.color}-600">Pilihan ${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt.text}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function speakCurrentQuestion() {
+            const current = quizData[currentQuizIndex];
+            speakText(current.question);
+        }
+
+        function handleQuizAnswer(isCorrect, buttonEl) {
+            if (isCorrect) {
+                playSound('correct');
+                buttonEl.classList.remove('bg-white');
+                buttonEl.classList.add('bg-green-500', 'text-white', 'border-green-600', 'animate__animated', 'animate__rubberBand');
+                updateGlobalScore(10);
+                
+                setTimeout(() => {
+                    currentQuizIndex++;
+                    if (currentQuizIndex < quizData.length) {
+                        loadQuizQuestion();
+                    } else {
+                        showResults();
+                    }
+                }, 1200);
+            } else {
+                playSound('wrong');
+                buttonEl.classList.add('bg-red-100', 'border-red-400', 'animate__animated', 'animate__shakeX');
+                speakText("Cuba lagi!");
+                setTimeout(() => {
+                    buttonEl.classList.remove('bg-red-100', 'border-red-400', 'animate__animated', 'animate__shakeX');
+                }, 800);
+            }
+        }
+
+        function startSortingGame() {
+            playSound('click');
+            currentSortIndex = 0;
+            hideAllScreens();
+            document.getElementById('screen-sorting').classList.remove('hidden');
+            loadSortItem();
+        }
+
+        function loadSortItem() {
+            const item = sortingData[currentSortIndex];
+            
+            const imgEl = document.getElementById('sort-item-img');
+            if (item.img) {
+                imgEl.src = item.img;
+                imgEl.classList.remove('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+            }
+
+            document.getElementById('sort-item-icon').innerText = item.icon;
+            document.getElementById('sort-item-name').innerText = item.name;
+            document.getElementById('sort-progress').innerText = `Item ${currentSortIndex + 1}/${sortingData.length}`;
+
+            speakText(`Manakah kategori untuk ${item.name}?`);
+        }
+
+        function submitSort(selectedCategory) {
+            const item = sortingData[currentSortIndex];
+
+            if (selectedCategory === item.category) {
+                playSound('correct');
+                updateGlobalScore(10);
+                
+                const container = document.getElementById('sorting-card-container');
+                container.classList.add('bg-green-50', 'border-green-400');
+
+                setTimeout(() => {
+                    container.classList.remove('bg-green-50', 'border-green-400');
+                    currentSortIndex++;
+                    if (currentSortIndex < sortingData.length) {
+                        loadSortItem();
+                    } else {
+                        showResults();
+                    }
+                }, 1000);
+            } else {
+                playSound('wrong');
+                const container = document.getElementById('sorting-card-container');
+                container.classList.add('animate__animated', 'animate__shakeX', 'bg-red-50');
+                speakText("Bukan kotak ini, cuba lagi!");
+
+                setTimeout(() => {
+                    container.classList.remove('animate__animated', 'animate__shakeX', 'bg-red-50');
+                }, 800);
+            }
+        }
+
+        function showResults() {
+            hideAllScreens();
+            document.getElementById('screen-results').classList.remove('hidden');
+            document.getElementById('final-score').innerText = globalScore;
+
+            try {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } catch (e) {}
+
+            speakText("Syabas dan Tahniah! Kamu telah berjaya menamatkan permainan.");
+
+            const badgeEl = document.getElementById('badge-text');
+            if (globalScore >= 80) {
+                badgeEl.innerText = "👑 Juara Detektif Suci (Cemerlang)";
+            } else if (globalScore >= 40) {
+                badgeEl.innerText = "🌟 Penyelamat Kebersihan (Bagus)";
+            } else {
+                badgeEl.innerText = "🎈 Pelajar Gigih (Teruskan Usaha)";
+            }
+        }
+    </script>
+</body>
+</html>
